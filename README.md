@@ -47,7 +47,7 @@ Visit my portfolio at: [https://harishockings.github.io/my-portfolio](https://ha
 
 - LinkedIn: [Hariharan Navaratnaraja](https://www.linkedin.com/in/hariharan-navaratanaraja-126121176/)
 - GitHub: [HariShockings](https://github.com/HariShockings)
-- Instagram: [hari_shockings](https://www.instagram.com/hari_shockings/)
+- Instagram: [harishockings](https://www.instagram.com/harishockings/)
 - HackerRank: [haritheguy21](https://www.hackerrank.com/profile/haritheguy21)
 
 ## 📄 License

@@ -34,51 +34,77 @@ export default function Contact() {
     setIsSending(true)
     setStatus('')
 
-    emailjs
-      .send(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-        formData,
-        import.meta.env.VITE_EMAILJS_USER_ID
-      )
-      .then(
-        () => {
+    fetch('https://formsubmit.co/ajax/haritheguy21@gmail.com', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+        _subject: `New portfolio contact from ${formData.name}`
+      })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success === 'true' || data.success === true) {
           setStatus('success')
           setFormData({ name: '', email: '', message: '' })
-        },
-        () => setStatus('error')
-      )
+        } else {
+          setStatus('error')
+        }
+      })
+      .catch((error) => {
+        console.error('Error sending message:', error)
+        setStatus('error')
+      })
       .finally(() => {
         setIsSending(false)
       })
   }
 
   return (
-    <section id="contact" className="py-20 bg-gray-800 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.h2
+    <section id="contact" className="py-20 bg-gray-950 text-white font-mono relative overflow-hidden border-t border-gray-900">
+      
+      {/* Background Grid & Scanline */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)] opacity-20" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,#030712_95%)] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-5xl font-extrabold text-center mb-16 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent"
+          className="text-center mb-12 flex flex-col items-center"
         >
-          Get in Touch
-        </motion.h2>
+          <div className="text-blue-500 font-black mb-3 flex items-center gap-2">
+            <span className="w-3 h-3 bg-blue-500 animate-pulse"></span>
+            SYS_MODULE: CONTACT
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-black mb-4 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent uppercase tracking-widest max-w-2xl mx-auto">
+            {`> HAVE A PROBLEM WORTH SOLVING? LET'S TALK.`}
+          </h2>
+          <p className="text-sm text-gray-400 max-w-xl mx-auto font-medium leading-relaxed">
+            Whether it's an internship, a thesis collaboration, or a role where I can build — I reply fast and I follow through.
+          </p>
+        </motion.div>
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="max-w-lg mx-auto"
         >
-          <form onSubmit={handleSubmit} className="space-y-6 bg-gray-800/50 backdrop-blur-sm p-8 rounded-xl shadow-xl border border-gray-700">
+          <form onSubmit={handleSubmit} className="space-y-6 bg-gray-900/50 backdrop-blur-md p-8 rounded-none border border-gray-800 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
             <div className="relative">
               <label 
                 htmlFor="name" 
-                className={`block text-sm font-medium text-gray-200 transition-all duration-300 ${
-                  isFocused.name ? 'text-blue-400' : ''
+                className={`block text-xs font-bold uppercase tracking-widest transition-all duration-300 ${
+                  isFocused.name ? 'text-blue-400' : 'text-gray-400'
                 }`}
               >
-                Name
+                {`> NAME`}
               </label>
               <input
                 type="text"
@@ -89,21 +115,21 @@ export default function Contact() {
                 onFocus={() => handleFocus('name')}
                 onBlur={() => handleBlur('name')}
                 required
-                className={`mt-1 block w-full px-3 py-2 bg-gray-900/50 border rounded-md text-white focus:outline-none transition-all duration-300 ${
+                className={`mt-2 block w-full px-4 py-3 bg-gray-950 border rounded-none text-white text-sm focus:outline-none transition-all duration-300 ${
                   isFocused.name 
-                    ? 'border-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.3)]' 
-                    : 'border-gray-700 hover:border-gray-600'
+                    ? 'border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.2)]' 
+                    : 'border-gray-800 hover:border-gray-700'
                 }`}
               />
             </div>
             <div className="relative">
               <label 
                 htmlFor="email" 
-                className={`block text-sm font-medium text-gray-200 transition-all duration-300 ${
-                  isFocused.email ? 'text-blue-400' : ''
+                className={`block text-xs font-bold uppercase tracking-widest transition-all duration-300 ${
+                  isFocused.email ? 'text-blue-400' : 'text-gray-400'
                 }`}
               >
-                Email
+                {`> EMAIL`}
               </label>
               <input
                 type="email"
@@ -114,21 +140,21 @@ export default function Contact() {
                 onFocus={() => handleFocus('email')}
                 onBlur={() => handleBlur('email')}
                 required
-                className={`mt-1 block w-full px-3 py-2 bg-gray-900/50 border rounded-md text-white focus:outline-none transition-all duration-300 ${
+                className={`mt-2 block w-full px-4 py-3 bg-gray-950 border rounded-none text-white text-sm focus:outline-none transition-all duration-300 ${
                   isFocused.email 
-                    ? 'border-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.3)]' 
-                    : 'border-gray-700 hover:border-gray-600'
+                    ? 'border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.2)]' 
+                    : 'border-gray-800 hover:border-gray-700'
                 }`}
               />
             </div>
             <div className="relative">
               <label 
                 htmlFor="message" 
-                className={`block text-sm font-medium text-gray-200 transition-all duration-300 ${
-                  isFocused.message ? 'text-blue-400' : ''
+                className={`block text-xs font-bold uppercase tracking-widest transition-all duration-300 ${
+                  isFocused.message ? 'text-blue-400' : 'text-gray-400'
                 }`}
               >
-                Message
+                {`> MESSAGE`}
               </label>
               <textarea
                 name="message"
@@ -139,10 +165,10 @@ export default function Contact() {
                 onFocus={() => handleFocus('message')}
                 onBlur={() => handleBlur('message')}
                 required
-                className={`mt-1 block w-full px-3 py-2 bg-gray-900/50 border rounded-md text-white focus:outline-none transition-all duration-300 ${
+                className={`mt-2 block w-full px-4 py-3 bg-gray-950 border rounded-none text-white text-sm focus:outline-none transition-all duration-300 ${
                   isFocused.message 
-                    ? 'border-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.3)]' 
-                    : 'border-gray-700 hover:border-gray-600'
+                    ? 'border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.2)]' 
+                    : 'border-gray-800 hover:border-gray-700'
                 }`}
               ></textarea>
             </div>
@@ -150,21 +176,21 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={isSending}
-                className={`w-full bg-blue-400 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                className={`w-full bg-transparent border-2 border-blue-500 text-blue-400 px-6 py-3 rounded-none font-bold uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 ${
                   isSending 
                     ? 'opacity-75 cursor-not-allowed' 
-                    : 'hover:bg-blue-500 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]'
+                    : 'hover:bg-blue-500 hover:text-gray-950 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)]'
                 }`}
               >
                 {isSending ? (
                   <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    Sending...
+                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                    [ SENDING... ]
                   </>
                 ) : (
                   <>
                     <FaPaperPlane />
-                    Send Message
+                    [ INIT_TRANSMISSION ]
                   </>
                 )}
               </button>

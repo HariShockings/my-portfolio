@@ -2,100 +2,62 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Canvas } from '@react-three/fiber'
 import ThreeDScene from './ThreeDScene'
 import { Suspense, useState, useEffect } from 'react'
-import { FaHtml5, FaCss3Alt, FaJs, FaReact, FaVuejs, FaBootstrap, FaPhp, FaNodeJs, FaJava, FaAndroid, FaPython, FaFigma } from 'react-icons/fa'
-import { SiJquery, SiSpringboot, SiExpress, SiMongodb, SiPostgresql, SiFirebase, SiMysql, SiIntellijidea } from 'react-icons/si'
+import { FaHtml5, FaCss3Alt, FaJs, FaReact, FaVuejs, FaBootstrap, FaPhp, FaNodeJs, FaJava, FaAndroid, FaPython, FaFigma, FaAws, FaDocker, FaLinux, FaGitAlt, FaWordpress } from 'react-icons/fa'
+import { SiJquery, SiSpringboot, SiExpress, SiMongodb, SiPostgresql, SiFirebase, SiMysql, SiIntellijidea, SiKubernetes, SiPostman, SiTensorflow, SiScikitlearn, SiTableau, SiNextdotjs, SiTailwindcss, SiGraphql, SiOpenai, SiShopify } from 'react-icons/si'
 
 export default function Skills() {
   const [activeCategory, setActiveCategory] = useState(0)
-  const [isDestroying, setIsDestroying] = useState(false)
+  const [selectedSkill, setSelectedSkill] = useState('')
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const skills = [
     { 
-      category: 'Frontend', 
+      category: 'Data & AI Engineering', 
       tech: [
-        { name: 'HTML', icon: <FaHtml5 className="text-orange-500 text-3xl" /> },
-        { name: 'CSS', icon: <FaCss3Alt className="text-blue-500 text-3xl" /> },
-        { name: 'JavaScript', icon: <FaJs className="text-yellow-400 text-3xl" /> },
-        { name: 'jQuery', icon: <SiJquery className="text-blue-600 text-3xl" /> },
-        { name: 'Vue.js', icon: <FaVuejs className="text-green-500 text-3xl" /> },
-        { name: 'React.js', icon: <FaReact className="text-blue-400 text-3xl" /> },
-        { name: 'Bootstrap', icon: <FaBootstrap className="text-purple-500 text-3xl" /> },
-        { name: 'Tailwind CSS', icon: <img src="https://cdn.worldvectorlogo.com/logos/tailwind-css-2.svg" alt="Tailwind" className="h-10 w-auto" /> },
-        { name: 'AJAX', icon: <img src="https://cdn.worldvectorlogo.com/logos/ajax-1.svg" alt="AJAX" className="h-10 w-auto" /> }
-      ]
-    },
-    { 
-      category: 'Backend', 
-      tech: [
-        { name: 'PHP', icon: <FaPhp className="text-purple-600 text-3xl" /> },
-        { name: 'MySQL', icon: <SiMysql className="text-blue-600 text-3xl" /> },
-        { name: 'Node.js', icon: <FaNodeJs className="text-green-600 text-3xl" /> },
-        { name: 'Spring Boot', icon: <SiSpringboot className="text-green-500 text-3xl" /> },
-        { name: 'Express', icon: <SiExpress className="text-gray-400 text-3xl" /> },
-        { name: 'FastAPI', icon: <img src="https://cdn.worldvectorlogo.com/logos/fastapi-1.svg" alt="FastAPI" className="h-10 w-auto" /> },
-        { name: 'REST APIs', icon: <img src="https://th.bing.com/th/id/OIP.-qbcqgc0HIspibRVRNBHBQHaE8?rs=1&pid=ImgDetMain" alt="REST API" className="h-10 w-auto" /> },
-        { name: 'Maven', icon: <img src="https://creazilla-store.fra1.digitaloceanspaces.com/icons/3254075/maven-icon-md.png" alt="Maven" className="h-10 w-auto" /> }
-      ]
-    },
-    { 
-      category: 'Mobile', 
-      tech: [
-        { name: 'Android Studio', icon: <FaAndroid className="text-green-500 text-3xl" /> },
-        { name: 'Kotlin', icon: <FaJava className="text-purple-600 text-3xl" /> },
-        { name: 'Java', icon: <FaJava className="text-red-500 text-3xl" /> },
-        { name: 'React Native', icon: <FaReact className="text-blue-400 text-3xl" /> }
-      ]
-    },
-    { 
-      category: 'Data Analytics', 
-      tech: [
-        { name: 'R Studio', icon: <img src="https://th.bing.com/th/id/OIP.HT-MXbLzM4SWhZWwZDvNGwHaIl?w=232&h=269&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2" alt="R Studio" className="w-4 h-4" /> },
-        { name: 'R Language', icon: <img src="https://cdn.worldvectorlogo.com/logos/r-lang.svg" alt="R Language" className="w-4 h-4" /> },
-        { name: 'Python', icon: <FaPython className="text-blue-500" /> },
-        { name: 'Google Surveys', icon: <img src="https://cdn.worldvectorlogo.com/logos/google-forms.svg" alt="Google Surveys" className="w-4 h-4" /> },
-        { name: 'Power BI', icon: <img src="https://cdn.worldvectorlogo.com/logos/power-bi.svg" alt="Power BI" className="w-4 h-4" /> }
-      ]
-    },
-    { 
-      category: '3D & Game Dev', 
-      tech: [
-        { name: 'Three.js', icon: <img src="https://cdn.worldvectorlogo.com/logos/threejs-1.svg" alt="Three.js" className="w-4 h-4" /> },
-        { name: 'Cannon.js', icon: null },
-        { name: 'Blender', icon: <img src="https://cdn.worldvectorlogo.com/logos/blender-1.svg" alt="Blender" className="w-4 h-4" /> },
-        { name: 'Mixamo', icon: null },
-        { name: 'MakeHuman', icon: null }
-      ]
-    },
-    { 
-      category: 'Databases', 
-      tech: [
+        { name: 'Python (Pandas, NumPy, Scikit-learn, TensorFlow)', icon: <FaPython className="text-blue-400 text-3xl" /> },
+        { name: 'SQL (MySQL/PostgreSQL)', icon: <SiMysql className="text-blue-500 text-3xl" /> },
+        { name: 'ETL & Data Modeling', icon: <span className="text-3xl">📊</span> },
         { name: 'MongoDB', icon: <SiMongodb className="text-green-500 text-3xl" /> },
-        { name: 'Firebase', icon: <SiFirebase className="text-orange-500 text-3xl" /> },
-        { name: 'MySQL', icon: <SiMysql className="text-blue-600 text-3xl" /> },
-        { name: 'PostgreSQL', icon: <SiPostgresql className="text-blue-400 text-3xl" /> },
-        { name: 'JSON', icon: <img src="https://cdn.worldvectorlogo.com/logos/json-5.svg" alt="JSON" className="h-10 w-auto" /> }
+        { name: 'GraphQL', icon: <SiGraphql className="text-pink-500 text-3xl" /> },
+        { name: 'Model Training', icon: <span className="text-3xl">🤖</span> },
+        { name: 'CNN', icon: <span className="text-3xl">👁️</span> },
+        { name: 'NLP basics', icon: <span className="text-3xl">💬</span> }
       ]
     },
     { 
-      category: 'Tools', 
+      category: 'Visualization & Analytics', 
       tech: [
-        { name: 'Workbench', icon: <img src="https://th.bing.com/th?q=SQL+Workbench+Icon+Circle&w=80&h=80&c=7&o=5&dpr=1.3&pid=1.7&mkt=en-WW&cc=LK&setlang=en&adlt=strict&t=1" alt="Workbench" className="h-10 w-auto" /> },
-        { name: 'IntelliJ', icon: <SiIntellijidea className="text-red-500 text-3xl" /> },
-        { name: 'NetBeans', icon: <img src="https://cdn.worldvectorlogo.com/logos/netbeans.svg" alt="NetBeans" className="h-10 w-auto" /> },
-        { name: 'Maven', icon: <img src="https://th.bing.com/th/id/R.57fb6322eb317f3ce4f4017e62691983?rik=ga89jZh9l766Gw&pid=ImgRaw&r=0" alt="Maven" className="h-10 w-auto" /> },
-        { name: 'Figma', icon: <FaFigma className="text-purple-500 text-3xl" /> },
-        { name: 'VS Code', icon: <img src="https://cdn.worldvectorlogo.com/logos/visual-studio-code-1.svg" alt="VS Code" className="h-10 w-auto" /> },
-        { name: 'Postman', icon: <img src="https://cdn.worldvectorlogo.com/logos/postman.svg" alt="Postman" className="h-10 w-auto" /> },
-        { name: 'GitHub', icon: <img src="https://cdn.worldvectorlogo.com/logos/github-icon-1.svg" alt="GitHub" className="h-10 w-auto" /> }
+        { name: 'Power BI', icon: <img src="https://cdn.worldvectorlogo.com/logos/power-bi.svg" alt="Power BI" className="h-9 w-auto" /> },
+        { name: 'Tableau', icon: <SiTableau className="text-blue-600 text-3xl" /> }
       ]
     },
     { 
-      category: 'AI & ML', 
+      category: 'Cloud & DevOps', 
       tech: [
-        { name: 'TensorFlow', icon: <img src="https://cdn.worldvectorlogo.com/logos/tensorflow-2.svg" alt="TensorFlow" className="h-10 w-auto" /> },
-        { name: 'Roboflow', icon: <img src="https://cdn.worldvectorlogo.com/logos/roboflow.svg" alt="Roboflow" className="h-10 w-auto" /> },
-        { name: 'OpenCV', icon: <img src="https://cdn.worldvectorlogo.com/logos/opencv.svg" alt="OpenCV" className="h-10 w-auto" /> },
-        { name: 'Hugging Face', icon: <img src="https://cdn.worldvectorlogo.com/logos/hugging-face.svg" alt="Hugging Face" className="h-10 w-auto" /> }
+        { name: 'AWS (Lambda, EC2, S3)', icon: <FaAws className="text-yellow-500 text-3xl" /> },
+        { name: 'Docker', icon: <FaDocker className="text-blue-400 text-3xl" /> },
+        { name: 'Kubernetes', icon: <SiKubernetes className="text-blue-500 text-3xl" /> },
+        { name: 'Git/GitHub', icon: <FaGitAlt className="text-orange-600 text-3xl" /> },
+        { name: 'Linux', icon: <FaLinux className="text-gray-300 text-3xl" /> }
+      ]
+    },
+    { 
+      category: 'Full-Stack Development', 
+      tech: [
+        { name: 'React', icon: <FaReact className="text-blue-400 text-3xl" /> },
+        { name: 'Vue.js', icon: <FaVuejs className="text-green-400 text-3xl" /> },
+        { name: 'React Native', icon: <FaReact className="text-cyan-400 text-3xl" /> },
+        { name: 'Node.js', icon: <FaNodeJs className="text-green-500 text-3xl" /> },
+        { name: 'PHP', icon: <FaPhp className="text-purple-500 text-3xl" /> },
+        { name: 'Java', icon: <FaJava className="text-red-500 text-3xl" /> },
+        { name: 'RESTful APIs', icon: <span className="text-3xl">🔗</span> },
+        { name: 'WordPress/WooCommerce', icon: <FaWordpress className="text-blue-400 text-3xl" /> }
       ]
     }
   ]
@@ -108,17 +70,23 @@ export default function Skills() {
       x: 0,
       y: 0
     },
-    animate: (index) => ({ 
-      opacity: 1,
-      scale: 1,
-      x: Math.cos(index * (2 * Math.PI / skills[activeCategory].tech.length)) * 200,
-      y: Math.sin(index * (2 * Math.PI / skills[activeCategory].tech.length)) * 200,
-      transition: {
-        duration: 1,
-        ease: "easeOut",
-        delay: index * 0.1
+    animate: (index) => {
+      const radius = isMobile ? 0 : 200
+      const x = isMobile ? 0 : Math.cos(index * (2 * Math.PI / skills[activeCategory].tech.length)) * radius
+      const y = isMobile ? 0 : Math.sin(index * (2 * Math.PI / skills[activeCategory].tech.length)) * radius
+      
+      return { 
+        opacity: 1,
+        scale: 1,
+        x,
+        y,
+        transition: {
+          duration: 1,
+          ease: "easeOut",
+          delay: index * 0.1
+        }
       }
-    }),
+    },
     exit: { 
       opacity: 0,
       scale: 0,
@@ -135,21 +103,32 @@ export default function Skills() {
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveCategory((prev) => (prev + 1) % skills.length)
-    }, 5000)
+      setSelectedSkill('') // Reset selected skill on rotation
+    }, 6000)
 
     return () => clearInterval(interval)
   }, [skills.length])
 
   return (
-    <section id="skills" className="py-20 bg-gray-800 text-white relative overflow-hidden min-h-screen flex items-center">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <motion.h2
+    <section id="skills" className="py-20 bg-gray-950 text-white relative overflow-hidden min-h-screen flex items-center font-mono border-t border-gray-900">
+      
+      {/* Background Grid & Scanline */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)] opacity-20" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,#030712_95%)] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
+        <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-4xl font-bold text-center mb-12"
+          className="text-center mb-12 flex flex-col items-center"
         >
-          <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Technical Skills in </span>
+          <div className="text-blue-500 font-black mb-2 flex items-center gap-2">
+            <span className="w-3 h-3 bg-blue-500 animate-pulse"></span>
+            {`SYS_MODULE: SKILLS`}
+          </div>
+          <h2 className="text-3xl md:text-4xl font-black uppercase tracking-widest text-gray-200">
+          <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">{`> TECHNICAL EXPERTISE IN `}</span><br className="sm:hidden" />
           <AnimatePresence mode="wait">
             <motion.span
               key={activeCategory}
@@ -161,12 +140,13 @@ export default function Skills() {
                 ease: [0.4, 0, 0.2, 1],
                 opacity: { duration: 0.3 }
               }}
-              className="text-blue-500 inline-block"
+              className="text-blue-500 inline-block mt-2 sm:mt-0"
             >
-              {skills[activeCategory].category}
+              {`[ ${skills[activeCategory].category} ]`}
             </motion.span>
           </AnimatePresence>
-        </motion.h2>
+          </h2>
+        </motion.div>
         
         {/* 3D Model Container */}
         <div className="relative w-full h-[600px] flex items-center justify-center">
@@ -192,13 +172,13 @@ export default function Skills() {
           </div>
 
           {/* Floating Skills */}
-          <div className="relative z-10">
+          <div className="relative z-10 w-full h-full flex items-center justify-center pointer-events-none md:pointer-events-auto">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeCategory}
-                className="absolute transform -translate-x-1/2 -translate-y-1/2"
+                className="absolute inset-0 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 flex items-center justify-center p-4 bg-gray-950/40 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none"
               >
-                <div className="flex flex-wrap gap-4 justify-center">
+                <div className="flex flex-wrap gap-4 justify-center pointer-events-auto max-w-sm md:block md:max-w-none">
                   {skills[activeCategory].tech.map((tech, index) => (
                     <motion.div
                       key={`${activeCategory}-${tech.name}`}
@@ -208,20 +188,40 @@ export default function Skills() {
                       exit="exit"
                       custom={index}
                       whileHover={{ scale: 1.2, rotate: 5 }}
-                      className="absolute flex flex-col items-center gap-2 group"
+                      onClick={() => setSelectedSkill(tech.name)}
+                      className="relative md:absolute flex flex-col items-center gap-2 group md:-ml-8 md:-mt-8 cursor-pointer"
                     >
-                      <div className="w-16 h-16 flex items-center justify-center bg-blue-100/20 rounded-full p-3 backdrop-blur-sm transition-all duration-300 group-hover:bg-blue-100/40">
-                        <div className="h-10 w-auto flex items-center justify-center">
+                      <div className={`w-16 h-16 flex items-center justify-center bg-gray-900/80 border shadow-[0_0_15px_rgba(59,130,246,0.1)] rounded-none p-3 backdrop-blur-sm transition-all duration-300 group-hover:bg-blue-900/20 group-hover:border-blue-500/50 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] ${selectedSkill === tech.name ? 'border-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.5)] bg-blue-900/30 grayscale-0' : 'border-gray-700/50'}`}>
+                        <div className={`h-10 w-auto flex items-center justify-center transition-all duration-300 ${selectedSkill === tech.name ? 'grayscale-0' : 'grayscale group-hover:grayscale-0'}`}>
                           {tech.icon || <span className="text-3xl">{tech.name}</span>}
                         </div>
                       </div>
-                      <span className="text-sm text-blue-300 bg-gray-800/80 px-3 py-1 rounded backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute -bottom-8 whitespace-nowrap">
-                        {tech.name}
+                      <span className="hidden md:block text-xs font-bold uppercase tracking-widest text-cyan-400 bg-gray-900/90 border border-gray-700 px-3 py-1 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute -bottom-8 whitespace-nowrap shadow-xl z-20 pointer-events-none">
+                        {`> ${tech.name}`}
                       </span>
                     </motion.div>
                   ))}
                 </div>
               </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Selected Skill Display (Mobile/Global) */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-center w-full px-4 z-20 pointer-events-none flex justify-center">
+            <AnimatePresence mode="wait">
+              {selectedSkill && (
+                <motion.div
+                  key={selectedSkill}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className="inline-block max-w-[90%]"
+                >
+                  <span className="inline-block text-xs md:text-sm font-bold uppercase tracking-widest text-cyan-400 bg-gray-950/95 border border-cyan-500/50 px-4 py-2 backdrop-blur-md shadow-[0_0_20px_rgba(34,211,238,0.2)] whitespace-normal break-words text-center leading-relaxed rounded-none">
+                    {`> ${selectedSkill}`}
+                  </span>
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
         </div>
