@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import axios from 'axios'
 import { FaGithub, FaStar, FaCodeBranch } from 'react-icons/fa'
+import { useTheme } from '../context/ThemeContext'
+import { useLanguage } from '../context/LanguageContext'
 
 export default function Projects() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -9,6 +11,8 @@ export default function Projects() {
   const [repositories, setRepositories] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
+  const { isDark } = useTheme()
+  const { t } = useLanguage()
 
   const projects = [
     {
@@ -80,20 +84,18 @@ export default function Projects() {
     }
   ]
 
-  // Calculate number of slides based on screen size
   const getSlidesPerView = () => {
     if (typeof window === 'undefined') return 4
-    if (window.innerWidth >= 1024) return 4 // Large screens (2x2 grid)
-    if (window.innerWidth >= 768) return 2 // Medium screens
-    return 1 // Small screens
+    if (window.innerWidth >= 1024) return 4
+    if (window.innerWidth >= 768) return 2
+    return 1
   }
 
-  // 6 grids in one view for GitHub repositories on large screens
   const getRepoSlidesPerView = () => {
     if (typeof window === 'undefined') return 6
-    if (window.innerWidth >= 1024) return 6 // 6 grids in one view (3x2)
-    if (window.innerWidth >= 768) return 4  // 4 in one view (2x2)
-    return 1 // 1 on mobile
+    if (window.innerWidth >= 1024) return 6
+    if (window.innerWidth >= 768) return 4
+    return 1
   }
 
   const [slidesPerView, setSlidesPerView] = useState(getSlidesPerView())
@@ -131,7 +133,7 @@ export default function Projects() {
     return acc
   }, [])
 
-  // Group GitHub repositories into slides (6 items per view on desktop)
+  // Group GitHub repositories into slides
   const groupedRepos = repositories.reduce((acc, repo, index) => {
     const slideIndex = Math.floor(index / repoSlidesPerView)
     if (!acc[slideIndex]) {
@@ -205,7 +207,6 @@ export default function Projects() {
               keepFetching = false
             }
           } catch (err) {
-            // If authenticated request failed (e.g. 401 Bad credentials), fallback to public user repos
             if (hasAuth) {
               console.warn('GitHub token invalid or unauthorized. Falling back to public repos for', username)
               hasAuth = false
@@ -217,7 +218,6 @@ export default function Projects() {
           }
         }
 
-        // Sort repos by updated_at descending
         allRepos.sort((a, b) => new Date(b.updated_at || b.pushed_at) - new Date(a.updated_at || a.pushed_at))
 
         setRepositories(allRepos)
@@ -235,11 +235,13 @@ export default function Projects() {
   }, [])
 
   return (
-    <section id="projects" className="py-20 bg-gray-950 text-white font-mono relative overflow-hidden border-t border-gray-900">
-      
+    <section id="projects" className={`py-20 font-mono relative overflow-hidden border-t transition-colors duration-500 ${
+      isDark ? 'bg-gray-950 text-white border-gray-900' : 'bg-slate-50 text-slate-900 border-slate-200'
+    }`}>
       {/* Background Grid & Scanline */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)] opacity-20" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,#030712_95%)] pointer-events-none" />
+      <div className={`absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)] opacity-20 pointer-events-none ${
+        !isDark && 'invert'
+      }`} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
@@ -250,13 +252,14 @@ export default function Projects() {
         >
           <div className="text-blue-500 font-black mb-3 flex items-center gap-2">
             <span className="w-3 h-3 bg-blue-500 animate-pulse"></span>
-            SYS_MODULE: PROJECTS
+            {t.projects.tag}
           </div>
-          <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent uppercase tracking-widest">
-            {`> SHIPPED WORK`}
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-600 bg-clip-text text-transparent uppercase tracking-widest text-center">
+            {t.projects.title}
           </h2>
         </motion.div>
 
+        {/* Shipped Work Carousel */}
         <div className="relative overflow-hidden">
           <div 
             className="flex transition-transform duration-500 ease-out"
@@ -271,26 +274,34 @@ export default function Projects() {
                 style={{ width: '100%' }}
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
-                  {slideProjects.map((project, index) => (
+                  {slideProjects.map((project) => (
                     <motion.div
                       key={project.name}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
-                      className="bg-gray-900/50 backdrop-blur-md p-8 rounded-none shadow-xl border border-gray-800 hover:border-blue-500/50 transition-colors duration-300 flex flex-col justify-between animate-fade-in group relative"
+                      className={`p-8 rounded-none shadow-xl border transition-colors duration-300 flex flex-col justify-between group relative ${
+                        isDark
+                          ? 'bg-gray-900/50 backdrop-blur-md border-gray-800 hover:border-blue-500/50 text-white'
+                          : 'bg-white backdrop-blur-md border-slate-200 hover:border-blue-500/50 text-slate-900'
+                      }`}
                     >
                       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       <div>
                         <span className="text-xs text-blue-500 mb-2 block font-bold uppercase tracking-widest">{`[ ${project.category} ]`}</span>
-                        <h3 className="text-2xl font-black mb-3 text-gray-100 uppercase">{project.name}</h3>
-                        <p className="text-sm text-gray-400 mb-4 leading-relaxed">{project.description}</p>
+                        <h3 className={`text-2xl font-black mb-3 uppercase ${isDark ? 'text-gray-100' : 'text-slate-900'}`}>{project.name}</h3>
+                        <p className={`text-sm mb-4 leading-relaxed ${isDark ? 'text-gray-400' : 'text-slate-600'}`}>{project.description}</p>
                       </div>
                       
                       <div>
                         {project.stack && (
                           <div className="flex flex-wrap gap-1.5 mb-5">
                             {project.stack.map(tech => (
-                              <span key={tech} className="text-[10px] px-2 py-1 bg-gray-950 text-cyan-400 border border-gray-800 font-bold uppercase tracking-widest group-hover:border-blue-500/30 transition-colors duration-300">
+                              <span key={tech} className={`text-[10px] px-2 py-1 font-bold uppercase tracking-widest border transition-colors duration-300 ${
+                                isDark
+                                  ? 'bg-gray-950 text-cyan-400 border-gray-800 group-hover:border-blue-500/30'
+                                  : 'bg-slate-100 text-blue-700 border-slate-200 group-hover:border-blue-300'
+                              }`}>
                                 {tech}
                               </span>
                             ))}
@@ -301,9 +312,9 @@ export default function Projects() {
                             href={project.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 text-blue-400 hover:text-cyan-400 font-bold transition-colors duration-300 text-sm uppercase tracking-widest"
+                            className="inline-flex items-center gap-2 text-blue-500 hover:text-cyan-500 font-bold transition-colors duration-300 text-sm uppercase tracking-widest"
                           >
-                            <span>[ VISIT_PROJECT ]</span> →
+                            <span>{t.projects.viewProject}</span> →
                           </a>
                         )}
                       </div>
@@ -315,7 +326,7 @@ export default function Projects() {
           </div>
         </div>
 
-        {/* Horizontal Indicators */}
+        {/* Shipped Work Indicators */}
         <div className="flex justify-center gap-3 mt-8">
           {groupedProjects.map((_, index) => (
             <button
@@ -324,7 +335,7 @@ export default function Projects() {
               className={`w-3 h-3 rounded-full transition-all duration-300 ${
                 activeIndex === index 
                   ? 'bg-blue-500 scale-125' 
-                  : 'bg-gray-600 hover:bg-gray-500'
+                  : isDark ? 'bg-gray-700 hover:bg-gray-600' : 'bg-slate-300 hover:bg-slate-400'
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />
@@ -340,23 +351,27 @@ export default function Projects() {
         >
           <div className="text-blue-500 font-black mb-3 flex items-center gap-2">
             <span className="w-3 h-3 bg-blue-500 animate-pulse"></span>
-            SYS_MODULE: GITHUB_REPOS
+            {t.projects.openSourceTag}
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent uppercase tracking-widest mb-4">
-            {`> OPEN SOURCE REPOSITORIES`}
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent uppercase tracking-widest mb-4">
+            {t.projects.openSourceTitle}
           </h2>
-          <p className="text-xs sm:text-sm md:text-base text-gray-400 max-w-2xl text-center px-4 leading-relaxed">
-            Code speaks louder than a CV. Live repositories fetched directly from GitHub {repositories.length > 0 && `(${repositories.length} repos)`} — auto-sliding 6 projects per view.
+          <p className={`text-xs sm:text-sm md:text-base max-w-2xl text-center px-4 leading-relaxed ${
+            isDark ? 'text-gray-400' : 'text-slate-600'
+          }`}>
+            {t.projects.openSourceDesc.replace('{count}', repositories.length)}
           </p>
         </motion.div>
 
         {isLoading ? (
           <div className="flex flex-col justify-center items-center h-48 gap-3">
             <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-            <span className="text-xs text-gray-400 font-mono tracking-widest">[ FETCHING_ALL_REPOSITORIES... ]</span>
+            <span className={`text-xs font-mono tracking-widest ${isDark ? 'text-gray-400' : 'text-slate-500'}`}>
+              {t.projects.fetching}
+            </span>
           </div>
         ) : error ? (
-          <div className="text-center text-red-400 p-6 bg-red-900/20 border border-red-800/50 max-w-lg mx-auto font-mono">
+          <div className="text-center text-red-500 p-6 bg-red-500/10 border border-red-500/30 max-w-lg mx-auto font-mono rounded-lg">
             <p className="text-sm font-bold">{error}</p>
           </div>
         ) : repositories.length === 0 ? (
@@ -381,25 +396,35 @@ export default function Projects() {
                     {slideRepos.map((repo) => (
                       <div
                         key={repo.id}
-                        className="bg-gray-900/50 backdrop-blur-md p-6 rounded-none shadow-xl border border-gray-800 hover:border-blue-500/50 transition-all duration-300 relative group flex flex-col justify-between h-full hover:shadow-[0_0_25px_rgba(59,130,246,0.15)]"
+                        className={`p-6 rounded-none shadow-xl border transition-all duration-300 relative group flex flex-col justify-between h-full ${
+                          isDark
+                            ? 'bg-gray-900/50 backdrop-blur-md border-gray-800 hover:border-blue-500/50 hover:shadow-[0_0_25px_rgba(59,130,246,0.15)] text-white'
+                            : 'bg-white backdrop-blur-md border-slate-200 hover:border-blue-500/50 hover:shadow-[0_4px_20px_rgba(59,130,246,0.15)] text-slate-900'
+                        }`}
                       >
                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         
                         <div>
                           <div className="flex items-start justify-between gap-3 mb-3">
-                            <h3 className="text-base sm:text-lg font-black text-gray-100 uppercase tracking-wide truncate group-hover:text-blue-400 transition-colors" title={repo.name}>
+                            <h3 className={`text-base sm:text-lg font-black uppercase tracking-wide truncate group-hover:text-blue-500 transition-colors ${
+                              isDark ? 'text-gray-100' : 'text-slate-900'
+                            }`} title={repo.name}>
                               {repo.name}
                             </h3>
                             <FaGithub className="text-xl text-blue-500 opacity-60 group-hover:opacity-100 transition-opacity duration-300 flex-shrink-0" />
                           </div>
 
-                          <p className="text-gray-400 text-xs mb-4 leading-relaxed line-clamp-3 min-h-[48px]">
+                          <p className={`text-xs mb-4 leading-relaxed line-clamp-3 min-h-[48px] ${
+                            isDark ? 'text-gray-400' : 'text-slate-600'
+                          }`}>
                             {repo.description || 'No description provided for this repository.'}
                           </p>
                         </div>
 
-                        <div className="pt-3 border-t border-gray-800/80">
-                          <div className="flex flex-wrap items-center justify-between gap-2 mb-4 text-[11px] text-gray-400 font-bold uppercase tracking-wider">
+                        <div className={`pt-3 border-t ${isDark ? 'border-gray-800/80' : 'border-slate-100'}`}>
+                          <div className={`flex flex-wrap items-center justify-between gap-2 mb-4 text-[11px] font-bold uppercase tracking-wider ${
+                            isDark ? 'text-gray-400' : 'text-slate-500'
+                          }`}>
                             <div className="flex items-center gap-3">
                               <div className="flex items-center gap-1" title="Stars">
                                 <FaStar className="text-blue-500 text-xs" />
@@ -411,7 +436,11 @@ export default function Projects() {
                               </div>
                             </div>
                             {repo.language && (
-                              <span className="px-2 py-0.5 bg-gray-950 border border-gray-800 text-cyan-400 text-[10px] font-mono">
+                              <span className={`px-2 py-0.5 border text-[10px] font-mono ${
+                                isDark
+                                  ? 'bg-gray-950 border-gray-800 text-cyan-400'
+                                  : 'bg-slate-100 border-slate-200 text-blue-700'
+                              }`}>
                                 {repo.language}
                               </span>
                             )}
@@ -422,18 +451,18 @@ export default function Projects() {
                               href={repo.html_url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-blue-400 hover:text-cyan-400 transition-colors text-xs font-bold uppercase tracking-widest inline-flex items-center gap-1.5"
+                              className="text-blue-500 hover:text-cyan-500 transition-colors text-xs font-bold uppercase tracking-widest inline-flex items-center gap-1.5"
                             >
-                              <span>[ VIEW_SOURCE ]</span> →
+                              <span>{t.projects.viewSource}</span> →
                             </a>
                             {repo.homepage && (
                               <a
                                 href={repo.homepage.startsWith('http') ? repo.homepage : `https://${repo.homepage}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-emerald-400 hover:text-emerald-300 transition-colors text-xs font-bold uppercase tracking-widest inline-flex items-center gap-1"
+                                className="text-emerald-500 hover:text-emerald-400 transition-colors text-xs font-bold uppercase tracking-widest inline-flex items-center gap-1"
                               >
-                                <span>[ LIVE ]</span> ↗
+                                <span>{t.projects.liveDemo}</span> ↗
                               </a>
                             )}
                           </div>
@@ -450,10 +479,14 @@ export default function Projects() {
               <div className="flex justify-center items-center gap-3 mt-10">
                 <button
                   onClick={() => setRepoActiveIndex((prev) => (prev === 0 ? groupedRepos.length - 1 : prev - 1))}
-                  className="px-3 py-1.5 bg-gray-900 border border-gray-800 hover:border-blue-500 text-gray-400 hover:text-blue-400 transition-all text-xs font-mono font-bold"
+                  className={`px-3 py-1.5 border transition-all text-xs font-mono font-bold ${
+                    isDark
+                      ? 'bg-gray-900 border-gray-800 hover:border-blue-500 text-gray-400 hover:text-blue-400'
+                      : 'bg-white border-slate-300 hover:border-blue-500 text-slate-700 hover:text-blue-600 shadow-sm'
+                  }`}
                   aria-label="Previous GitHub Slide"
                 >
-                  &lt; PREV
+                  {t.projects.prev}
                 </button>
 
                 <div className="flex items-center gap-2">
@@ -464,7 +497,7 @@ export default function Projects() {
                       className={`transition-all duration-300 rounded-none ${
                         repoActiveIndex === index 
                           ? 'w-6 h-2 bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]' 
-                          : 'w-2 h-2 bg-gray-700 hover:bg-gray-500'
+                          : isDark ? 'w-2 h-2 bg-gray-700 hover:bg-gray-500' : 'w-2 h-2 bg-slate-300 hover:bg-slate-400'
                       }`}
                       aria-label={`Go to GitHub slide ${index + 1}`}
                     />
@@ -473,10 +506,14 @@ export default function Projects() {
 
                 <button
                   onClick={() => setRepoActiveIndex((prev) => (prev + 1) % groupedRepos.length)}
-                  className="px-3 py-1.5 bg-gray-900 border border-gray-800 hover:border-blue-500 text-gray-400 hover:text-blue-400 transition-all text-xs font-mono font-bold"
+                  className={`px-3 py-1.5 border transition-all text-xs font-mono font-bold ${
+                    isDark
+                      ? 'bg-gray-900 border-gray-800 hover:border-blue-500 text-gray-400 hover:text-blue-400'
+                      : 'bg-white border-slate-300 hover:border-blue-500 text-slate-700 hover:text-blue-600 shadow-sm'
+                  }`}
                   aria-label="Next GitHub Slide"
                 >
-                  NEXT &gt;
+                  {t.projects.next}
                 </button>
               </div>
             )}
