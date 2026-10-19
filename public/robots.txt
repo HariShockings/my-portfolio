@@ -1,0 +1,29 @@
+# Robots.txt for Hariharan Navaratnaraja Portfolio
+# https://harishockings.github.io/my-portfolio/
+
+User-agent: *
+Allow: /
+Disallow: /node_modules/
+Disallow: /dist/
+
+# Search Engine Crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# Sitemap Location
+Sitemap: https://harishockings.github.io/my-portfolio/sitemap.xml

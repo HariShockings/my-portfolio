@@ -2,14 +2,182 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/jpeg" href="/assets/profile.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hariharan Navaratnaraja - Portfolio</title>
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/babel-standalone@7/babel.min.js"></script>
+  
+  <!-- Primary Title & Meta Tags -->
+  <title>Hariharan Navaratnaraja | Developer Hariharan | AI Engineer & Full Stack Portfolio</title>
+  <meta name="title" content="Hariharan Navaratnaraja | Developer Hariharan | AI Engineer & Full Stack Portfolio" />
+  <meta name="description" content="Official portfolio of Hariharan Navaratnaraja (Developer Hariharan) — AI & Data Engineer (MSc at University of Vaasa, Finland) and Full-Stack Developer with 4+ years of production experience building high-performance web systems and ML models." />
+  <meta name="keywords" content="Hariharan, developer Hariharan, Hariharan developer, Navaratnaraja Hariharan, Hariharan Navaratnaraja, Hariharan portfolio, Hariharan software engineer, Hariharan AI engineer, Hariharan web developer, Hariharan Finland, Hariharan Vaasa, Hariharan SLIIT, Hariharan Bedfordshire, HariShockings, harishockings, Full Stack Developer, AI Engineer, Data Engineer, Machine Learning, React, Three.js, Python, Deep Learning, Software Engineer Portfolio" />
+  <meta name="author" content="Navaratnaraja Hariharan" />
+  <meta name="creator" content="Hariharan Navaratnaraja" />
+  <meta name="publisher" content="Hariharan Navaratnaraja" />
+  
+  <!-- Search Engine Crawlers & Indexing -->
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  
+  <!-- Canonical Link -->
+  <link rel="canonical" href="https://harishockings.github.io/my-portfolio/" />
+  
+  <!-- Multilingual SEO (Hreflang) -->
+  <link rel="alternate" hreflang="x-default" href="https://harishockings.github.io/my-portfolio/" />
+  <link rel="alternate" hreflang="en" href="https://harishockings.github.io/my-portfolio/?lang=en" />
+  <link rel="alternate" hreflang="ta" href="https://harishockings.github.io/my-portfolio/?lang=ta" />
+  <link rel="alternate" hreflang="fi" href="https://harishockings.github.io/my-portfolio/?lang=fi" />
+  <link rel="alternate" hreflang="sv" href="https://harishockings.github.io/my-portfolio/?lang=sv" />
+  <link rel="alternate" hreflang="de" href="https://harishockings.github.io/my-portfolio/?lang=de" />
+  <link rel="alternate" hreflang="es" href="https://harishockings.github.io/my-portfolio/?lang=es" />
+  <link rel="alternate" hreflang="fr" href="https://harishockings.github.io/my-portfolio/?lang=fr" />
+
+  <!-- Geographic Meta Tags -->
+  <meta name="geo.region" content="FI-06" />
+  <meta name="geo.placename" content="Vaasa, Finland" />
+  <meta name="geo.position" content="63.0951;21.6165" />
+  <meta name="ICBM" content="63.0951, 21.6165" />
+
+  <!-- Open Graph / Facebook / LinkedIn / Discord -->
+  <meta property="og:type" content="profile" />
+  <meta property="og:url" content="https://harishockings.github.io/my-portfolio/" />
+  <meta property="og:title" content="Hariharan Navaratnaraja | Developer Hariharan" />
+  <meta property="og:description" content="Official portfolio of Hariharan Navaratnaraja (Developer Hariharan). AI & Data Engineer (MSc at University of Vaasa) and Full-Stack Developer with 4+ years of production experience." />
+  <meta property="og:image" content="https://harishockings.github.io/my-portfolio/assets/profile.png" />
+  <meta property="og:image:alt" content="Hariharan Navaratnaraja - Developer Hariharan" />
+  <meta property="og:image:width" content="800" />
+  <meta property="og:image:height" content="800" />
+  <meta property="og:site_name" content="Developer Hariharan Portfolio" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="profile:first_name" content="Hariharan" />
+  <meta property="profile:last_name" content="Navaratnaraja" />
+  <meta property="profile:username" content="HariShockings" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://harishockings.github.io/my-portfolio/" />
+  <meta name="twitter:title" content="Hariharan Navaratnaraja | Developer Hariharan" />
+  <meta name="twitter:description" content="AI & Data Engineer and Full-Stack Developer. MSc at University of Vaasa, Finland." />
+  <meta name="twitter:image" content="https://harishockings.github.io/my-portfolio/assets/profile.png" />
+  <meta name="twitter:image:alt" content="Hariharan Navaratnaraja" />
+
+  <!-- Favicons and Web App Manifest -->
+  <link rel="icon" type="image/png" href="/assets/profile.png" />
+  <link rel="apple-touch-icon" href="/assets/profile.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="theme-color" content="#030712" />
+
+  <!-- Structured Data: JSON-LD (Schema.org for Google Knowledge Panel & #1 Ranking) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://harishockings.github.io/my-portfolio/#person",
+        "name": "Hariharan Navaratnaraja",
+        "alternateName": [
+          "Hariharan",
+          "Developer Hariharan",
+          "Hari",
+          "HariShockings",
+          "Navaratnaraja Hariharan"
+        ],
+        "givenName": "Hariharan",
+        "familyName": "Navaratnaraja",
+        "url": "https://harishockings.github.io/my-portfolio/",
+        "image": "https://harishockings.github.io/my-portfolio/assets/profile.png",
+        "jobTitle": "Full Stack Developer & AI Engineer",
+        "description": "AI & Data Engineer and Full-Stack Developer specializing in machine learning, deep learning, distributed data pipelines, and production web applications.",
+        "email": "mailto:haritheguy21@gmail.com",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Vaasa",
+          "addressCountry": "Finland"
+        },
+        "alumniOf": [
+          {
+            "@type": "CollegeOrUniversity",
+            "name": "University of Vaasa",
+            "sameAs": "https://www.uwasa.fi/en"
+          },
+          {
+            "@type": "CollegeOrUniversity",
+            "name": "University of Bedfordshire",
+            "sameAs": "https://www.beds.ac.uk/"
+          },
+          {
+            "@type": "CollegeOrUniversity",
+            "name": "SLIIT City University",
+            "sameAs": "https://www.sliit.lk/"
+          }
+        ],
+        "sameAs": [
+          "https://github.com/HariShockings",
+          "https://www.linkedin.com/in/hariharan-navaratanaraja-126121176/",
+          "https://www.instagram.com/harishockings/",
+          "https://www.hackerrank.com/profile/haritheguy21",
+          "https://www.tiktok.com/@hari_shockings",
+          "https://www.facebook.com/share/19YLxNh57M/"
+        ],
+        "knowsAbout": [
+          "Artificial Intelligence",
+          "Machine Learning",
+          "Deep Learning",
+          "Full Stack Web Development",
+          "React.js",
+          "Node.js",
+          "Python",
+          "Three.js",
+          "Tailwind CSS",
+          "Data Engineering",
+          "Software Engineering"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://harishockings.github.io/my-portfolio/#website",
+        "url": "https://harishockings.github.io/my-portfolio/",
+        "name": "Developer Hariharan Portfolio",
+        "alternateName": "Hariharan Navaratnaraja Portfolio",
+        "publisher": {
+          "@id": "https://harishockings.github.io/my-portfolio/#person"
+        },
+        "inLanguage": ["en", "ta", "fi", "sv", "de", "es", "fr"]
+      },
+      {
+        "@type": "ProfilePage",
+        "@id": "https://harishockings.github.io/my-portfolio/#profilepage",
+        "url": "https://harishockings.github.io/my-portfolio/",
+        "name": "Hariharan Navaratnaraja - Developer Hariharan",
+        "mainEntity": {
+          "@id": "https://harishockings.github.io/my-portfolio/#person"
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
+  <!-- Noscript Content for Instant Search Engine Indexing -->
+  <noscript>
+    <div style="padding: 2rem; font-family: sans-serif; background-color: #030712; color: #f8fafc;">
+      <h1>Hariharan Navaratnaraja — Developer Hariharan | AI Engineer &amp; Full-Stack Developer</h1>
+      <p>
+        Welcome to the official portfolio of Hariharan Navaratnaraja (Developer Hariharan).
+        AI &amp; Data Engineer currently pursuing an MSc in Data Engineering &amp; AI at the University of Vaasa, Finland, with 4+ years of production experience in software engineering, machine learning, and full-stack development.
+      </p>
+      <h2>Featured Skills &amp; Technologies</h2>
+      <p>React.js, Node.js, Python, PyTorch, TensorFlow, Three.js, Tailwind CSS, TypeScript, Machine Learning, Neural Networks, Docker, Cloud Architecture.</p>
+      <h2>Contact &amp; Profiles</h2>
+      <ul>
+        <li><a href="https://github.com/HariShockings">GitHub: HariShockings</a></li>
+        <li><a href="https://www.linkedin.com/in/hariharan-navaratanaraja-126121176/">LinkedIn: Hariharan Navaratnaraja</a></li>
+        <li><a href="https://www.instagram.com/harishockings/">Instagram: @harishockings</a></li>
+        <li><a href="mailto:haritheguy21@gmail.com">Email: haritheguy21@gmail.com</a></li>
+      </ul>
+    </div>
+  </noscript>
+
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>

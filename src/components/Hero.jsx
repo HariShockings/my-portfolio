@@ -287,13 +287,14 @@ export default function Hero() {
           <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 blur-xl opacity-60 group-hover:opacity-100 transition-opacity duration-500 animate-pulse" />
           <img
             src="/assets/profile.jpg"
-            alt="Navaratnaraja Hariharan"
+            alt="Navaratnaraja Hariharan (Developer Hariharan) - Full Stack Developer & AI Engineer Portfolio Avatar"
             className="w-full h-full rounded-full object-cover border-2 border-blue-400 z-10 relative group-hover:scale-105 transition-transform duration-500 shadow-xl"
           />
         </motion.div>
 
         {/* Name Title with Typewriter Animation */}
         <motion.h1
+          aria-label="Navaratnaraja Hariharan - Developer Hariharan Portfolio"
           className="text-3xl sm:text-5xl md:text-6xl font-black pb-0 sm:pb-2 bg-gradient-to-r from-blue-500 via-indigo-400 to-purple-600 bg-clip-text text-transparent tracking-tight uppercase font-mono min-h-[48px] sm:min-h-[65px] md:min-h-[80px]"
         >
           {displayedName}
@@ -387,12 +388,12 @@ export default function Hero() {
           {/* Social Icons */}
           <div className="flex space-x-2">
             {[
-              { href: "https://github.com/hariShockings", icon: <FaGithub className="w-4 h-4" />, title: "GitHub" },
-              { href: "https://www.linkedin.com/in/hariharan-navaratanaraja-126121176/", icon: <FaLinkedin className="w-4 h-4" />, title: "LinkedIn" },
-              { href: "https://www.instagram.com/harishockings/", icon: <FaInstagram className="w-4 h-4" />, title: "Instagram" },
-              { href: "https://www.tiktok.com/@hari_shockings?_r=1&_t=ZS-99IAYMEi13N", icon: <FaTiktok className="w-4 h-4" />, title: "TikTok" },
-              { href: "https://www.facebook.com/share/19YLxNh57M/?mibextid=wwXIfr", icon: <FaFacebook className="w-4 h-4" />, title: "Facebook" },
-              { href: "https://www.hackerrank.com/profile/haritheguy21", icon: <FaHackerrank className="w-4 h-4" />, title: "HackerRank" },
+              { href: "https://github.com/hariShockings", icon: <FaGithub className="w-4 h-4" />, title: "GitHub - HariShockings" },
+              { href: "https://www.linkedin.com/in/hariharan-navaratanaraja-126121176/", icon: <FaLinkedin className="w-4 h-4" />, title: "LinkedIn - Hariharan Navaratnaraja" },
+              { href: "https://www.instagram.com/harishockings/", icon: <FaInstagram className="w-4 h-4" />, title: "Instagram - @harishockings" },
+              { href: "https://www.tiktok.com/@hari_shockings?_r=1&_t=ZS-99IAYMEi13N", icon: <FaTiktok className="w-4 h-4" />, title: "TikTok - @hari_shockings" },
+              { href: "https://www.facebook.com/share/19YLxNh57M/?mibextid=wwXIfr", icon: <FaFacebook className="w-4 h-4" />, title: "Facebook - Hariharan" },
+              { href: "https://www.hackerrank.com/profile/haritheguy21", icon: <FaHackerrank className="w-4 h-4" />, title: "HackerRank - haritheguy21" },
             ].map((soc) => (
               <a
                 key={soc.title}
@@ -400,6 +401,7 @@ export default function Hero() {
                 target="_blank"
                 rel="noopener noreferrer"
                 title={soc.title}
+                aria-label={soc.title}
                 className={`p-2.5 rounded border transition-all duration-300 ${
                   isDark
                     ? 'bg-gray-900/80 hover:bg-gray-800 text-gray-300 hover:text-white border-gray-800 hover:border-blue-400/50'

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Main Homepage (Developer Hariharan Portfolio) -->
+  <url>
+    <loc>https://harishockings.github.io/my-portfolio/</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    
+    <!-- Multi-Language Alternate Hreflang Links -->
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://harishockings.github.io/my-portfolio/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://harishockings.github.io/my-portfolio/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ta" href="https://harishockings.github.io/my-portfolio/?lang=ta" />
+    <xhtml:link rel="alternate" hreflang="fi" href="https://harishockings.github.io/my-portfolio/?lang=fi" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://harishockings.github.io/my-portfolio/?lang=sv" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://harishockings.github.io/my-portfolio/?lang=de" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://harishockings.github.io/my-portfolio/?lang=es" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://harishockings.github.io/my-portfolio/?lang=fr" />
+
+    <!-- Google Image Search Optimization -->
+    <image:image>
+      <image:loc>https://harishockings.github.io/my-portfolio/assets/profile.png</image:loc>
+      <image:title>Hariharan Navaratnaraja - Developer Hariharan Portfolio Avatar</image:title>
+      <image:caption>Hariharan Navaratnaraja, Full-Stack Developer and AI Engineer</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Deep Section Links for Search Engine Indexing -->
+  <url>
+    <loc>https://harishockings.github.io/my-portfolio/#about</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://harishockings.github.io/my-portfolio/#skills</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://harishockings.github.io/my-portfolio/#projects</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://harishockings.github.io/my-portfolio/#contact</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>
