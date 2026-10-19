@@ -1,5 +1,5 @@
 # Robots.txt for Hariharan Navaratnaraja Portfolio
-# https://harishockings.github.io/my-portfolio/
+# https://hariharan.astronlox.com/
 
 User-agent: *
 Allow: /
@@ -26,4 +26,4 @@ User-agent: YandexBot
 Allow: /
 
 # Sitemap Location
-Sitemap: https://harishockings.github.io/my-portfolio/sitemap.xml
+Sitemap: https://hariharan.astronlox.com/sitemap.xml

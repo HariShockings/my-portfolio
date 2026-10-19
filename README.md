@@ -41,7 +41,7 @@ npm run dev
 
 ## 🌐 Live Demo
 
-Visit my portfolio at: [https://harishockings.github.io/my-portfolio](https://harishockings.github.io/my-portfolio)
+Visit my portfolio at: [https://hariharan.astronlox.com](https://hariharan.astronlox.com)
 
 ## 📱 Contact
 
