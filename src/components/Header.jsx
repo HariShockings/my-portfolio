@@ -26,9 +26,9 @@ export default function Header() {
   return (
     <>
       {/* Thin Availability Banner */}
-      <div className="bg-emerald-950/90 text-emerald-400 text-xs font-mono font-semibold py-2 px-4 border-b border-emerald-900/30 text-center relative z-50 backdrop-blur-md tracking-wider">
-        <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse mr-2"></span>
-        &gt;_ OPEN FOR AI & DATA ENGINEERING INTERNSHIPS · THESIS COLLABORATIONS · SOFTWARE ENGINEERING ROLES
+      <div className="bg-emerald-950/90 text-emerald-400 text-[10px] sm:text-xs font-mono font-semibold py-1.5 sm:py-2 px-2.5 sm:px-4 border-b border-emerald-900/30 text-center relative z-50 backdrop-blur-md tracking-tight sm:tracking-wider leading-relaxed">
+        <span className="inline-block w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400 animate-pulse mr-1.5 sm:mr-2 align-middle"></span>
+        &gt;_ OPEN FOR AI &amp; DATA ENGINEERING INTERNSHIPS · THESIS COLLABORATIONS · SOFTWARE ENGINEERING ROLES
       </div>
       
       <motion.nav
@@ -37,7 +37,7 @@ export default function Header() {
         className={`fixed w-full z-50 transition-all duration-300 ${
           isScrolled 
             ? 'top-0 bg-gray-950/75 backdrop-blur-md border-b border-gray-900/80 shadow-[0_4px_30px_rgba(0,0,0,0.3)]' 
-            : 'top-8 bg-transparent'
+            : 'top-7 sm:top-8 bg-transparent'
         }`}
       >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

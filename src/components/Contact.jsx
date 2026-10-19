@@ -176,7 +176,7 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={isSending}
-                className={`w-full bg-transparent border-2 border-blue-500 text-blue-400 px-6 py-3 rounded-none font-bold uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 ${
+                className={`w-full bg-transparent border-2 border-blue-500 text-blue-400 text-xs sm:text-sm md:text-base px-4 sm:px-6 py-2.5 sm:py-3 rounded-none font-bold uppercase tracking-wider sm:tracking-widest transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 ${
                   isSending 
                     ? 'opacity-75 cursor-not-allowed' 
                     : 'hover:bg-blue-500 hover:text-gray-950 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)]'
@@ -184,13 +184,13 @@ export default function Contact() {
               >
                 {isSending ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                    [ SENDING... ]
+                    <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                    <span>[ SENDING... ]</span>
                   </>
                 ) : (
                   <>
-                    <FaPaperPlane />
-                    [ INIT_TRANSMISSION ]
+                    <FaPaperPlane className="text-xs sm:text-sm" />
+                    <span>[ INIT_TRANSMISSION ]</span>
                   </>
                 )}
               </button>

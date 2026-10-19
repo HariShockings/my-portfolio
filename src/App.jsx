@@ -7,10 +7,11 @@ import WhyWorkWithMe from './components/WhyWorkWithMe.jsx'
 import Projects from './components/Projects.jsx'
 import Contact from './components/Contact.jsx'
 import Footer from './components/Footer.jsx'
+import Chatbot from './components/Chatbot.jsx'
 
 function App() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col relative">
       <Header />
       <main className="flex-grow">
         <Hero />
@@ -22,6 +23,7 @@ function App() {
         <Contact />
       </main>
       <Footer />
+      <Chatbot />
     </div>
   )
 }

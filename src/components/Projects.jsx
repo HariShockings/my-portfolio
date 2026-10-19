@@ -82,23 +82,36 @@ export default function Projects() {
 
   // Calculate number of slides based on screen size
   const getSlidesPerView = () => {
+    if (typeof window === 'undefined') return 4
     if (window.innerWidth >= 1024) return 4 // Large screens (2x2 grid)
     if (window.innerWidth >= 768) return 2 // Medium screens
     return 1 // Small screens
   }
 
+  // 6 grids in one view for GitHub repositories on large screens
+  const getRepoSlidesPerView = () => {
+    if (typeof window === 'undefined') return 6
+    if (window.innerWidth >= 1024) return 6 // 6 grids in one view (3x2)
+    if (window.innerWidth >= 768) return 4  // 4 in one view (2x2)
+    return 1 // 1 on mobile
+  }
+
   const [slidesPerView, setSlidesPerView] = useState(getSlidesPerView())
+  const [repoSlidesPerView, setRepoSlidesPerView] = useState(getRepoSlidesPerView())
+  const [repoActiveIndex, setRepoActiveIndex] = useState(0)
+  const [repoIsPaused, setRepoIsPaused] = useState(false)
 
   useEffect(() => {
     const handleResize = () => {
       setSlidesPerView(getSlidesPerView())
+      setRepoSlidesPerView(getRepoSlidesPerView())
     }
 
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  // Auto-scroll effect
+  // Auto-scroll effect for Shipped Work
   useEffect(() => {
     const interval = setInterval(() => {
       if (!isPaused) {
@@ -118,21 +131,96 @@ export default function Projects() {
     return acc
   }, [])
 
-  // Fetch GitHub repositories
+  // Group GitHub repositories into slides (6 items per view on desktop)
+  const groupedRepos = repositories.reduce((acc, repo, index) => {
+    const slideIndex = Math.floor(index / repoSlidesPerView)
+    if (!acc[slideIndex]) {
+      acc[slideIndex] = []
+    }
+    acc[slideIndex].push(repo)
+    return acc
+  }, [])
+
+  useEffect(() => {
+    if (repoActiveIndex >= groupedRepos.length && groupedRepos.length > 0) {
+      setRepoActiveIndex(0)
+    }
+  }, [groupedRepos.length, repoActiveIndex])
+
+  // Auto-scroll effect for GitHub Repositories
+  useEffect(() => {
+    if (groupedRepos.length <= 1) return
+    const interval = setInterval(() => {
+      if (!repoIsPaused) {
+        setRepoActiveIndex((prev) => (prev + 1) % groupedRepos.length)
+      }
+    }, 6000)
+    return () => clearInterval(interval)
+  }, [groupedRepos.length, repoIsPaused])
+
+  // Fetch all GitHub repositories
   useEffect(() => {
     const fetchRepositories = async () => {
+      setIsLoading(true)
       try {
-        const response = await axios.get('https://api.github.com/user/repos', {
-          headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`,
-            Accept: 'application/vnd.github.v3+json'
-          },
-          params: {
-            sort: 'updated',
-            per_page: 6
+        const token = import.meta.env.VITE_GITHUB_TOKEN
+        const username = 'hariShockings'
+        let allRepos = []
+        let page = 1
+        let keepFetching = true
+        let hasAuth = !!token
+
+        while (keepFetching && page <= 10) {
+          try {
+            const url = hasAuth
+              ? 'https://api.github.com/user/repos'
+              : `https://api.github.com/users/${username}/repos`
+
+            const headers = {
+              Accept: 'application/vnd.github.v3+json',
+            }
+            if (hasAuth) {
+              headers.Authorization = `Bearer ${token}`
+            }
+
+            const response = await axios.get(url, {
+              headers,
+              params: {
+                sort: 'updated',
+                direction: 'desc',
+                per_page: 100,
+                page: page,
+                ...(hasAuth ? { affiliation: 'owner,collaborator' } : {})
+              }
+            })
+
+            if (Array.isArray(response.data) && response.data.length > 0) {
+              allRepos = [...allRepos, ...response.data]
+              if (response.data.length < 100) {
+                keepFetching = false
+              } else {
+                page++
+              }
+            } else {
+              keepFetching = false
+            }
+          } catch (err) {
+            // If authenticated request failed (e.g. 401 Bad credentials), fallback to public user repos
+            if (hasAuth) {
+              console.warn('GitHub token invalid or unauthorized. Falling back to public repos for', username)
+              hasAuth = false
+              allRepos = []
+              page = 1
+              continue
+            }
+            throw err
           }
-        })
-        setRepositories(response.data)
+        }
+
+        // Sort repos by updated_at descending
+        allRepos.sort((a, b) => new Date(b.updated_at || b.pushed_at) - new Date(a.updated_at || a.pushed_at))
+
+        setRepositories(allRepos)
         setError(null)
       } catch (error) {
         console.error('Error fetching GitHub repos:', error)
@@ -143,12 +231,7 @@ export default function Projects() {
       }
     }
 
-    if (import.meta.env.VITE_GITHUB_TOKEN) {
-      fetchRepositories()
-    } else {
-      setError('GitHub token not found. Please add your GitHub token to the environment variables.')
-      setIsLoading(false)
-    }
+    fetchRepositories()
   }, [])
 
   return (
@@ -259,74 +342,144 @@ export default function Projects() {
             <span className="w-3 h-3 bg-blue-500 animate-pulse"></span>
             SYS_MODULE: GITHUB_REPOS
           </div>
-          <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent uppercase tracking-widest mb-6">
-            {`> OPEN SOURCE`}
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent uppercase tracking-widest mb-4">
+            {`> OPEN SOURCE REPOSITORIES`}
           </h2>
-          <p className="text-sm md:text-base text-gray-400 max-w-2xl text-left">
-            Code speaks louder than a CV. Here's what's public — from production models to shipped client work.
+          <p className="text-xs sm:text-sm md:text-base text-gray-400 max-w-2xl text-center px-4 leading-relaxed">
+            Code speaks louder than a CV. Live repositories fetched directly from GitHub {repositories.length > 0 && `(${repositories.length} repos)`} — auto-sliding 6 projects per view.
           </p>
         </motion.div>
 
         {isLoading ? (
-          <div className="flex justify-center items-center h-40">
-            <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="flex flex-col justify-center items-center h-48 gap-3">
+            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            <span className="text-xs text-gray-400 font-mono tracking-widest">[ FETCHING_ALL_REPOSITORIES... ]</span>
           </div>
         ) : error ? (
-          <div className="text-center text-red-400 p-4 bg-red-900/20 rounded-lg">
-            <p>{error}</p>
-            <p className="text-sm mt-2">
-              Make sure you have added your GitHub token to the .env file:
-              <br />
-              <code className="bg-gray-800 px-2 py-1 rounded">VITE_GITHUB_TOKEN=your_token_here</code>
-            </p>
+          <div className="text-center text-red-400 p-6 bg-red-900/20 border border-red-800/50 max-w-lg mx-auto font-mono">
+            <p className="text-sm font-bold">{error}</p>
           </div>
         ) : repositories.length === 0 ? (
-          <div className="text-center text-gray-400 p-4">
-            No repositories found.
+          <div className="text-center text-gray-400 p-8 font-mono">
+            [ NO_REPOSITORIES_FOUND ]
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {repositories.map((repo) => (
-              <motion.div
-                key={repo.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="bg-gray-900/50 p-6 rounded-none shadow-xl border border-gray-800 hover:border-blue-500/50 transition-colors duration-300 relative group"
-              >
-                <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="flex items-start justify-between mb-4 pl-2">
-                  <div>
-                    <h3 className="text-xl font-black text-gray-100 mb-2 uppercase">{repo.name}</h3>
-                    <p className="text-gray-400 text-xs mb-4 leading-relaxed">{repo.description || 'No description available.'}</p>
+          <div className="relative overflow-hidden">
+            <div 
+              className="flex transition-transform duration-500 ease-out"
+              style={{ transform: `translateX(-${repoActiveIndex * 100}%)` }}
+              onMouseEnter={() => setRepoIsPaused(true)}
+              onMouseLeave={() => setRepoIsPaused(false)}
+            >
+              {groupedRepos.map((slideRepos, slideIndex) => (
+                <div
+                  key={slideIndex}
+                  className="w-full flex-shrink-0"
+                  style={{ width: '100%' }}
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-2 sm:px-4">
+                    {slideRepos.map((repo) => (
+                      <div
+                        key={repo.id}
+                        className="bg-gray-900/50 backdrop-blur-md p-6 rounded-none shadow-xl border border-gray-800 hover:border-blue-500/50 transition-all duration-300 relative group flex flex-col justify-between h-full hover:shadow-[0_0_25px_rgba(59,130,246,0.15)]"
+                      >
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        
+                        <div>
+                          <div className="flex items-start justify-between gap-3 mb-3">
+                            <h3 className="text-base sm:text-lg font-black text-gray-100 uppercase tracking-wide truncate group-hover:text-blue-400 transition-colors" title={repo.name}>
+                              {repo.name}
+                            </h3>
+                            <FaGithub className="text-xl text-blue-500 opacity-60 group-hover:opacity-100 transition-opacity duration-300 flex-shrink-0" />
+                          </div>
+
+                          <p className="text-gray-400 text-xs mb-4 leading-relaxed line-clamp-3 min-h-[48px]">
+                            {repo.description || 'No description provided for this repository.'}
+                          </p>
+                        </div>
+
+                        <div className="pt-3 border-t border-gray-800/80">
+                          <div className="flex flex-wrap items-center justify-between gap-2 mb-4 text-[11px] text-gray-400 font-bold uppercase tracking-wider">
+                            <div className="flex items-center gap-3">
+                              <div className="flex items-center gap-1" title="Stars">
+                                <FaStar className="text-blue-500 text-xs" />
+                                <span>{repo.stargazers_count}</span>
+                              </div>
+                              <div className="flex items-center gap-1" title="Forks">
+                                <FaCodeBranch className="text-cyan-500 text-xs" />
+                                <span>{repo.forks_count}</span>
+                              </div>
+                            </div>
+                            {repo.language && (
+                              <span className="px-2 py-0.5 bg-gray-950 border border-gray-800 text-cyan-400 text-[10px] font-mono">
+                                {repo.language}
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="flex items-center justify-between gap-3">
+                            <a
+                              href={repo.html_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-400 hover:text-cyan-400 transition-colors text-xs font-bold uppercase tracking-widest inline-flex items-center gap-1.5"
+                            >
+                              <span>[ VIEW_SOURCE ]</span> →
+                            </a>
+                            {repo.homepage && (
+                              <a
+                                href={repo.homepage.startsWith('http') ? repo.homepage : `https://${repo.homepage}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-emerald-400 hover:text-emerald-300 transition-colors text-xs font-bold uppercase tracking-widest inline-flex items-center gap-1"
+                              >
+                                <span>[ LIVE ]</span> ↗
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <FaGithub className="text-2xl text-blue-500 opacity-50 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
-                
-                <div className="flex items-center gap-4 text-xs text-gray-500 mb-4 pl-2 font-bold uppercase tracking-widest">
-                  <div className="flex items-center gap-1">
-                    <FaStar className="text-blue-500" />
-                    <span>{repo.stargazers_count}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <FaCodeBranch className="text-cyan-500" />
-                    <span>{repo.forks_count}</span>
-                  </div>
-                  <span className="px-2 py-1 bg-gray-950 border border-gray-800 text-blue-400">
-                    {repo.language || 'N/A'}
-                  </span>
+              ))}
+            </div>
+
+            {/* GitHub Carousel Indicators & Prev/Next Controls */}
+            {groupedRepos.length > 1 && (
+              <div className="flex justify-center items-center gap-3 mt-10">
+                <button
+                  onClick={() => setRepoActiveIndex((prev) => (prev === 0 ? groupedRepos.length - 1 : prev - 1))}
+                  className="px-3 py-1.5 bg-gray-900 border border-gray-800 hover:border-blue-500 text-gray-400 hover:text-blue-400 transition-all text-xs font-mono font-bold"
+                  aria-label="Previous GitHub Slide"
+                >
+                  &lt; PREV
+                </button>
+
+                <div className="flex items-center gap-2">
+                  {groupedRepos.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setRepoActiveIndex(index)}
+                      className={`transition-all duration-300 rounded-none ${
+                        repoActiveIndex === index 
+                          ? 'w-6 h-2 bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]' 
+                          : 'w-2 h-2 bg-gray-700 hover:bg-gray-500'
+                      }`}
+                      aria-label={`Go to GitHub slide ${index + 1}`}
+                    />
+                  ))}
                 </div>
 
-                <a
-                  href={repo.html_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:text-cyan-400 transition-colors duration-300 text-xs font-bold uppercase tracking-widest pl-2 inline-flex items-center gap-2"
+                <button
+                  onClick={() => setRepoActiveIndex((prev) => (prev + 1) % groupedRepos.length)}
+                  className="px-3 py-1.5 bg-gray-900 border border-gray-800 hover:border-blue-500 text-gray-400 hover:text-blue-400 transition-all text-xs font-mono font-bold"
+                  aria-label="Next GitHub Slide"
                 >
-                  <span>[ VIEW_SOURCE ]</span> →
-                </a>
-              </motion.div>
-            ))}
+                  NEXT &gt;
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
